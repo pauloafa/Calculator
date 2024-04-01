@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Preço de Venda</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .tooltip {
+        position: relative;
+        display: inline-block;
+      }
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -60px;
+      }
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div
+      class="bg-white p-6 rounded shadow-md"
+      style="width: 100%; max-width: 500px"
+    >
+      <div
+        id="ctaContainer"
+        class="hidden bg-blue-50 border-l-4 border-blue-500 p-4 mb-5 rounded"
+      >
+        <p class="text-sm text-blue-700">
+          Descubra como economizar com as taxas da maquininha!
+          <a
+            href="https://www.infinitepay.io"
+            class="underline text-blue-500 hover:text-blue-600"
+            >Conheça a InfinitePay.</a
+          >
+        </p>
+      </div>
+      <div class="mt-2">
+        <label class="block mb-2">
+          <span class="text-gray-700">Custo Unitário</span>
+          <div class="tooltip ml-2 inline-block text-sm text-gray-400">
+            <span>?</span>
+            <span class="tooltiptext"
+              >Informe o valor de custo por unidade do produto</span
+            >
+          </div>
+        </label>
+        <div class="flex items-center">
+          <span class="mr-2">R$</span>
+          <input
+            type="number"
+            min="0"
+            id="unitCost"
+            class="input border p-2 rounded w-full"
+            required
+          />
+        </div>
+      </div>
+      <div class="mt-2">
+        <label class="block mb-2">
+          <span class="text-gray-700">Custos Fixos</span>
+          <div class="tooltip ml-2 inline-block text-sm text-gray-400">
+            <span>?</span>
+            <span class="tooltiptext">Custos fixos associados à venda</span>
+          </div>
+        </label>
+        <div class="flex items-center">
+          <span class="mr-2">R$</span>
+          <input
+            type="number"
+            min="0"
+            id="fixedCosts"
+            class="input border p-2 rounded w-full"
+          />
+        </div>
+      </div>
+      <div class="mt-2">
+        <label class="block mb-2">
+          <span class="text-gray-700">Margem de Lucro</span>
+          <div class="tooltip ml-2 inline-block text-sm text-gray-400">
+            <span>?</span>
+            <span class="tooltiptext">Porcentagem de lucro desejada</span>
+          </div>
+        </label>
+        <div class="flex items-center">
+          <select id="marginType" class="border rounded p-2">
+            <option value="percentage">%</option>
+            <option value="fixed">R$</option>
+          </select>
+          <input
+            type="number"
+            min="0"
+            id="profitMargin"
+            class="input border p-2 rounded w-full ml-2"
+            required
+          />
+        </div>
+      </div>
+      <div class="mt-2">
+        <label class="block mb-2">
+          <span class="text-gray-700">Custo de Envio</span>
+          <div class="tooltip ml-2 inline-block text-sm text-gray-400">
+            <span>?</span>
+            <span class="tooltiptext">Custo para enviar o produto</span>
+          </div>
+        </label>
+        <div class="flex items-center">
+          <span class="mr-2">R$</span>
+          <input
+            type="number"
+            min="0"
+            id="shippingCost"
+            class="input border p-2 rounded w-full"
+          />
+        </div>
+      </div>
+      <div class="mt-2">
+        <label class="block mb-2">
+          <span class="text-gray-700">Comissões</span>
+          <div class="tooltip ml-2 inline-block text-sm text-gray-400">
+            <span>?</span>
+            <span class="tooltiptext">Comissões sobre a venda</span>
+          </div>
+        </label>
+        <div class="flex items-center">
+          <span class="mr-2">R$</span>
+          <input
+            type="number"
+            min="0"
+            id="commissions"
+            class="input border p-2 rounded w-full"
+          />
+        </div>
+      </div>
+      <div class="mt-2">
+        <label class="block mb-2">
+          <span class="text-gray-700">Impostos</span>
+          <div class="tooltip ml-2 inline-block text-sm text-gray-400">
+            <span>?</span>
+            <span class="tooltiptext">Impostos sobre a venda</span>
+          </div>
+        </label>
+        <div class="flex items-center">
+          <span class="mr-2">%</span>
+          <input
+            type="number"
+            min="0"
+            id="taxes"
+            class="input border p-2 rounded w-full"
+          />
+        </div>
+      </div>
+      <div class="mt-2">
+        <label class="block mb-2">
+          <span class="text-gray-700">Desconto à Vista</span>
+          <div class="tooltip ml-2 inline-block text-sm text-gray-400">
+            <span>?</span>
+            <span class="tooltiptext"
+              >Desconto oferecido para pagamento à vista</span
+            >
+          </div>
+        </label>
+        <div class="flex items-center">
+          <span class="mr-2">%</span>
+          <input
+            type="number"
+            min="0"
+            id="cashDiscount"
+            class="input border p-2 rounded w-full"
+          />
+        </div>
+      </div>
+      <div class="mt-2">
+        <label class="block mb-2">
+          <span class="text-gray-700">Taxa da Máquina</span>
+          <div class="tooltip ml-2 inline-block text-sm text-gray-400">
+            <span>?</span>
+            <span class="tooltiptext">Taxa cobrada pela máquina de cartão</span>
+          </div>
+        </label>
+        <div class="flex items-center">
+          <span class="mr-2">%</span>
+          <input
+            type="number"
+            min="0"
+            id="machineRate"
+            class="input border p-2 rounded w-full"
+          />
+        </div>
+      </div>
+      <button
+        id="calculateBtn"
+        class="bg-blue-500 text-white w-full mt-4 py-2 rounded"
+      >
+        Calcular
+      </button>
+      <div id="result" class="mt-4" aria-live="polite">
+        Preço de Venda: R$0,00
+      </div>
+      <button
+        id="resetBtn"
+        class="bg-gray-500 text-white w-full mt-2 py-2 rounded"
+      >
+        Resetar
+      </button>
+      <button
+        id="copyResultBtn"
+        class="bg-green-500 text-white w-full mt-2 py-2 rounded hidden"
+      >
+        Copiar Resultado
+      </button>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const fields = [
+          "unitCost",
+          "fixedCosts",
+          "profitMargin",
+          "shippingCost",
+          "commissions",
+          "taxes",
+          "cashDiscount",
+          "machineRate",
+        ];
+        const calculate = () => {
+          let valid = true;
+          const data = fields.reduce((acc, field) => {
+            const input = document.getElementById(field);
+            const value = parseFloat(input.value) || 0;
+            input.classList.remove("border-red-500"); // Usando classe Tailwind para erro
+            if (
+              (field === "unitCost" || field === "profitMargin") &&
+              value <= 0
+            ) {
+              input.classList.add("border-red-500"); // Usando classe Tailwind para erro
+              valid = false;
+            }
+            acc[field] = value;
+            return acc;
+          }, {});
+          if (valid) {
+            let { totalCost, salePrice } = calculateSalePrice(data);
+            document.getElementById(
+              "result"
+            ).textContent = `Preço de Venda: R$${salePrice.toFixed(2)}`;
+            document.getElementById("copyResultBtn").classList.remove("hidden");
+            ctaContainer.style.display =
+              data.machineRate > 1 ? "block" : "none";
+          } else {
+            document.getElementById("result").textContent =
+              "Erro: Verifique os inputs.";
+            document.getElementById("copyResultBtn").classList.add("hidden");
+          }
+        };
+        const calculateSalePrice = (data) => {
+          let totalCost =
+            data.unitCost +
+            data.fixedCosts +
+            data.shippingCost +
+            data.commissions;
+          let marginValue =
+            data.marginType === "percentage"
+              ? totalCost * (data.profitMargin / 100)
+              : data.profitMargin;
+          let salePrice = totalCost + marginValue;
+          salePrice *= 1 + data.taxes / 100;
+          salePrice *= 1 + data.machineRate / 100;
+          salePrice *= 1 - data.cashDiscount / 100;
+          return { totalCost, salePrice };
+        };
+        const resetFields = () => {
+          fields.forEach((field) => {
+            const input = document.getElementById(field);
+            input.value = "";
+            input.classList.remove("border-red-500"); // Usando classe Tailwind para erro
+          });
+          document.getElementById("result").textContent =
+            "Preço de Venda: R$0,00";
+          document.getElementById("copyResultBtn").classList.add("hidden");
+        };
+        const copyResult = () => {
+          const resultText = document
+            .getElementById("result")
+            .textContent.replace("Preço de Venda: ", "");
+          navigator.clipboard
+            .writeText(resultText)
+            .then(() =>
+              alert("Resultado copiado para a área de transferência.")
+            )
+            .catch(() => alert("Falha ao copiar o resultado."));
+        };
+        document
+          .getElementById("calculateBtn")
+          .addEventListener("click", calculate);
+        document
+          .getElementById("resetBtn")
+          .addEventListener("click", resetFields);
+        document
+          .getElementById("copyResultBtn")
+          .addEventListener("click", copyResult);
+      });
+    </script>
+  </body>
+</html>
